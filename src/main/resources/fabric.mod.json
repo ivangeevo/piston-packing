@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "piston_packing",
+  "version": "${version}",
+  "name": "piston-packing",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/piston_packing/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": ["org.ivangeevo.piston_packing.client.Piston_packingClient"],
+    "main": ["org.ivangeevo.piston_packing.PistonPackingMod"],
+    "fabric-datagen": ["org.ivangeevo.piston_packing.PistonPackingDataGenerator"]
+  },
+  "mixins": [
+    "piston_packing.mixins.json",
+    {
+      "config": "piston_packing.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
