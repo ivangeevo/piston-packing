@@ -1,0 +1,15 @@
+{
+  "type": "piston_packing:piston_packing",
+  "category": "misc",
+  "ingredients": [
+    {
+      "count": 9,
+      "ingredient": {
+        "item": "minecraft:flint"
+      }
+    }
+  ],
+  "result": {
+    "item": "minecraft:gravel"
+  }
+}

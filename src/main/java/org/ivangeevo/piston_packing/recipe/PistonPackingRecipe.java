@@ -24,6 +24,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -39,14 +40,14 @@ import java.util.function.Function;
 public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
     protected final String group;
     protected final CraftingRecipeCategory category;
-    final DefaultedList<Ingredient> ingredients;
+    final DefaultedList<IngredientWithCount> ingredients;
     protected final Ingredient result;
 
-    public PistonPackingRecipe(String group, CraftingRecipeCategory category, DefaultedList<Ingredient> ingredients, Ingredient result) {
+    public PistonPackingRecipe(String group, CraftingRecipeCategory category, DefaultedList<IngredientWithCount> ingredients, Ingredient result) {
         this.group = group;
         this.category = category;
-        this.ingredients = ingredients;
-        this.result = Ingredient.EMPTY;
+        this.ingredients = DefaultedList.copyOf(IngredientWithCount.EMPTY, ingredients.toArray(new IngredientWithCount[0]));;
+        this.result = result;
     }
 
     @Override
@@ -62,10 +63,10 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
     @Override
     public boolean matches(PackingRecipeInput input, World world) {
         // Iterate over the ingredients in the recipe
-        for (Ingredient ingredient : ingredients) {
+        for (IngredientWithCount ingredient : ingredients) {
             // Check if the input contains at least one matching ingredient
             boolean ingredientMatched = input.items().stream()
-                    .anyMatch(ingredient); // Check if any item in the input matches the ingredient
+                    .anyMatch(ingredient.toVanilla()); // Check if any item in the input matches the ingredient
 
             // If no matching ingredient is found in the input, return false
             if (!ingredientMatched) {
@@ -89,6 +90,12 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
 
     @Override
     public DefaultedList<Ingredient> getIngredients() {
+        DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+        defaultedList.addAll(this.ingredients.stream().map(IngredientWithCount::toVanilla).toList());
+        return defaultedList;
+    }
+
+    public DefaultedList<IngredientWithCount> getIngredientsWithCount() {
         return ingredients;
     }
 
@@ -135,15 +142,15 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
         public static final Serializer INSTANCE = new Serializer();
         public static final String ID = "piston_packing";
         @Unique
-        private static final Function<List<Ingredient>, DataResult<DefaultedList<Ingredient>>>
+        private static final Function<List<IngredientWithCount>, DataResult<DefaultedList<IngredientWithCount>>>
                 INGREDIENTS_VALIDATOR = ingredients -> {
-            Ingredient[] ingredientsArray = ingredients.stream().filter(ingredient -> !ingredient.isEmpty()).toArray(Ingredient[]::new);
+            IngredientWithCount[] ingredientsArray = ingredients.stream().filter(ingredient -> !ingredient.ingredient().isEmpty()).toArray(IngredientWithCount[]::new);
             if (ingredientsArray.length == 0) {
                 return DataResult.error(() -> "No ingredients for piston packing recipe");
             } else {
                 return ingredientsArray.length > 64
                         ? DataResult.error(() -> "Too many ingredients for piston packing recipe")
-                        : DataResult.success(DefaultedList.copyOf(Ingredient.EMPTY, ingredientsArray));
+                        : DataResult.success(DefaultedList.copyOf(IngredientWithCount.EMPTY, ingredientsArray));
             }
         };
 
@@ -154,7 +161,7 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
                         CraftingRecipeCategory.CODEC.fieldOf("category")
                                 .orElse(CraftingRecipeCategory.MISC)
                                 .forGetter(recipe -> recipe.category),
-                        Ingredient.DISALLOW_EMPTY_CODEC
+                        IngredientWithCount.Serializer.DISALLOW_EMPTY_CODEC.codec()
                                 .listOf()
                                 .fieldOf("ingredients")
                                 .flatXmap(INGREDIENTS_VALIDATOR, DataResult::success)
@@ -186,8 +193,8 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             String group = buf.readString();
             CraftingRecipeCategory category = buf.readEnumConstant(CraftingRecipeCategory.class);
             int ingredientsSize = buf.readVarInt();
-            DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(ingredientsSize, Ingredient.EMPTY);
-            ingredients.replaceAll(ignored -> Ingredient.PACKET_CODEC.decode(buf));
+            DefaultedList<IngredientWithCount> ingredients = DefaultedList.ofSize(ingredientsSize, IngredientWithCount.EMPTY);
+            ingredients.replaceAll(ignored -> IngredientWithCount.Serializer.PACKET_CODEC.decode(buf));
             Ingredient result = Ingredient.PACKET_CODEC.decode(buf);
             return new PistonPackingRecipe(group, category, ingredients, result);
         }
@@ -196,8 +203,8 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             buf.writeString(recipe.group);
             buf.writeEnumConstant(recipe.category);
             buf.writeVarInt(recipe.ingredients.size());
-            for (Ingredient ingredient : recipe.ingredients) {
-                Ingredient.PACKET_CODEC.encode(buf, ingredient);
+            for (IngredientWithCount ingredient : recipe.ingredients) {
+                IngredientWithCount.Serializer.PACKET_CODEC.encode(buf, ingredient);
             }
             Ingredient.PACKET_CODEC.encode(buf, recipe.result);
         }
@@ -205,7 +212,7 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
 
     public static class JsonBuilder implements CraftingRecipeJsonBuilder {
         protected CraftingRecipeCategory category = CraftingRecipeCategory.MISC;
-        protected DefaultedList<Ingredient> ingredients = DefaultedList.of();  // Initialize DefaultedList
+        protected DefaultedList<IngredientWithCount> ingredients = DefaultedList.of();  // Initialize DefaultedList
         protected Ingredient result = Ingredient.EMPTY;
         protected final Map<String, AdvancementCriterion<?>> criteria = new LinkedHashMap<>();
         @Nullable
@@ -220,21 +227,21 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             return this;
         }
 
-        public JsonBuilder ingredients(Ingredient... ingredients) {
-            for (Ingredient ingredient : ingredients) {
+        public JsonBuilder ingredients(IngredientWithCount... ingredients) {
+            for (IngredientWithCount ingredient : ingredients) {
                 this.ingredient(ingredient);
             }
             return this;
         }
 
-        public JsonBuilder ingredient(Ingredient ingredient) {
-            this.ingredients.add(ingredient);  // Add to ingredients list
+        public JsonBuilder ingredient(IngredientWithCount ingredient) {
+            this.ingredients.add(ingredient);
             return this;
         }
 
         public JsonBuilder ingredient(ItemStack itemStack) {
             this.criterion(RecipeProvider.hasItem(itemStack.getItem()), RecipeProvider.conditionsFromItem(itemStack.getItem()));
-            return this.ingredient(Ingredient.ofStacks(itemStack));
+            return this.ingredient(IngredientWithCount.fromStack(itemStack));
         }
 
         public JsonBuilder ingredient(Item item, int count) {
@@ -243,6 +250,15 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
 
         public JsonBuilder ingredient(Item item) {
             return this.ingredient(item, 1);
+        }
+
+        public JsonBuilder ingredient(TagKey<Item> itemTag, int count) {
+            this.criterion("has_" + itemTag.id().getPath(), RecipeProvider.conditionsFromTag(itemTag));
+            return this.ingredient(IngredientWithCount.fromTag(itemTag, count));
+        }
+
+        public JsonBuilder ingredient(TagKey<Item> itemTag) {
+            return this.ingredient(itemTag, 1);
         }
 
         public JsonBuilder result(Block block) {
@@ -281,7 +297,7 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             this.offerTo(exporter,
                     RecipeProvider.getItemPath(getOutputItem())
                             + "_from_piston_packing_"
-                            + RecipeProvider.getItemPath(this.ingredients.getFirst().getMatchingStacks()[0].getItem()));
+                            + RecipeProvider.getItemPath(this.ingredients.getFirst().ingredient().getMatchingStacks()[0].getItem()));
         }
 
         public void offerTo(RecipeExporter exporter, Identifier recipeId) {
