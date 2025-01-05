@@ -13,7 +13,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import org.tough_environment.ToughEnvironmentMod;
+import org.ivangeevo.piston_packing.PistonPackingMod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public record IngredientWithCount(Ingredient ingredient, int count) implements C
     }
 
     public static class Serializer implements CustomIngredientSerializer<IngredientWithCount> {
-        private static final Identifier ID = Identifier.of(ToughEnvironmentMod.MOD_ID,"ingredient_with_count");
+        private static final Identifier ID = Identifier.of(PistonPackingMod.MOD_ID,"ingredient_with_count");
         public static final MapCodec<IngredientWithCount> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
         public static final MapCodec<IngredientWithCount> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
         public static final PacketCodec<RegistryByteBuf, IngredientWithCount> PACKET_CODEC = PacketCodec.ofStatic(

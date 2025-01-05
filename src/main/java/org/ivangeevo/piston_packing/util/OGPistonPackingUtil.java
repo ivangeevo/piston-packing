@@ -15,8 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.tough_environment.block.ModBlocks;
-import org.tough_environment.item.ModItems;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,21 +32,21 @@ public class OGPistonPackingUtil
 
     private static void initItemsPacking() {
 
-        PACKING_RECIPES.put(ModItems.PILE_DIRT, new PackingRecipe(ModBlocks.DIRT_LOOSE, 8));
-        PACKING_RECIPES.put(ModItems.PILE_GRAVEL, new PackingRecipe(Blocks.GRAVEL, 8));
-        PACKING_RECIPES.put(ModItems.PILE_SAND, new PackingRecipe(Blocks.SAND, 8));
-        PACKING_RECIPES.put(ModItems.PILE_RED_SAND, new PackingRecipe(Blocks.RED_SAND, 8));
-        PACKING_RECIPES.put(ModItems.PILE_CLAY, new PackingRecipe(ModBlocks.CLAY_BLOCK, 18));
+        //PACKING_RECIPES.put(ModItems.PILE_DIRT, new PackingRecipe(ModBlocks.DIRT_LOOSE, 8));
+        //PACKING_RECIPES.put(ModItems.PILE_GRAVEL, new PackingRecipe(Blocks.GRAVEL, 8));
+        //PACKING_RECIPES.put(ModItems.PILE_SAND, new PackingRecipe(Blocks.SAND, 8));
+        //PACKING_RECIPES.put(ModItems.PILE_RED_SAND, new PackingRecipe(Blocks.RED_SAND, 8));
+        //PACKING_RECIPES.put(ModItems.PILE_CLAY, new PackingRecipe(ModBlocks.CLAY_BLOCK, 18));
 
-        PACKING_RECIPES.put(ModItems.SMALL_STONE, new PackingRecipe(ModBlocks.COBBLESTONE_LOOSE, 8));
+        //PACKING_RECIPES.put(ModItems.SMALL_STONE, new PackingRecipe(ModBlocks.COBBLESTONE_LOOSE, 8));
         //PACKING_RECIPES.put(ModItems.SMALL_STONE_1, new PackingRecipe(ModBlocks.MANTLESTONE_LOOSE, 8));
-        PACKING_RECIPES.put(ModItems.SMALL_STONE_2, new PackingRecipe(ModBlocks.COBBLED_DEEPSLATE_LOOSE, 8));
+        //PACKING_RECIPES.put(ModItems.SMALL_STONE_2, new PackingRecipe(ModBlocks.COBBLED_DEEPSLATE_LOOSE, 8));
 
-        PACKING_RECIPES.put(ModItems.STONE_BRICK, new PackingRecipe(ModBlocks.STONE_BRICKS_LOOSE, 4));
+        //PACKING_RECIPES.put(ModItems.STONE_BRICK, new PackingRecipe(ModBlocks.STONE_BRICKS_LOOSE, 4));
         //PACKING_RECIPES.put(ModItems.STONE_BRICK_1, new PackingRecipe(ModBlocks.MANTLESTONE_BRICKS_LOOSE, 4));
-        PACKING_RECIPES.put(ModItems.STONE_BRICK_2, new PackingRecipe(ModBlocks.DEEPSLATE_BRICKS_LOOSE, 4));
+        //PACKING_RECIPES.put(ModItems.STONE_BRICK_2, new PackingRecipe(ModBlocks.DEEPSLATE_BRICKS_LOOSE, 4));
 
-        PACKING_RECIPES.put(Items.CLAY_BALL, new PackingRecipe(ModBlocks.CLAY_BLOCK, 9));
+        //PACKING_RECIPES.put(Items.CLAY_BALL, new PackingRecipe(ModBlocks.CLAY_BLOCK, 9));
 
 
         //PACKING_RECIPES.put(Items.BONE, new PackingRecipe(ModBlocks.BONE_BLOCK, 9));
@@ -60,8 +58,8 @@ public class OGPistonPackingUtil
         //PACKING_RECIPES.put(Items.SPIDER_EYE, new PackingRecipe(BTWR_Blocks.SPIDER_EYES_BLOCK, 16));
         //PACKING_RECIPES.put(Items.ENDER_PEARL, new PackingRecipe(BTWR_Blocks.ENDER_BLOCK, 9));
 
-        PACKING_RECIPES.put(Items.BRICK, new PackingRecipe(ModBlocks.BRICKS_LOOSE, 8));
-        PACKING_RECIPES.put(Items.NETHER_BRICK, new PackingRecipe(ModBlocks.NETHER_BRICKS_LOOSE, 8));
+        //PACKING_RECIPES.put(Items.BRICK, new PackingRecipe(ModBlocks.BRICKS_LOOSE, 8));
+        //PACKING_RECIPES.put(Items.NETHER_BRICK, new PackingRecipe(ModBlocks.NETHER_BRICKS_LOOSE, 8));
         //PACKING_RECIPES.put(BwtItems.dungItem, new PackingRecipe(BTWR_Blocks.DUNG_BLOCK, 8));
         //PACKING_RECIPES.put(Items.FLINT, new PackingRecipe(BTWR_Blocks.DUNG_BLOCK, 8));
         //PACKING_RECIPES.put(BwtItems.soapItem, new PackingRecipe(BTWR_Blocks.SOAP_BLOCK, 8));
