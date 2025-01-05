@@ -5,17 +5,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.*;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import org.ivangeevo.piston_packing.PistonPackingMod;
 import org.ivangeevo.piston_packing.recipe.PistonPackingRecipe;
-import org.tough_environment.block.ModBlocks;
-import org.tough_environment.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
