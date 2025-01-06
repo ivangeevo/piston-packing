@@ -42,7 +42,7 @@ dependencies {
     modImplementation "org.ivangeevo:btwr-shared-lib:${project.btwr_sl_version}"
 
     // Tough Environment
-    //modImplementation "maven.modrinth:tough-environment:${project.tough_environment_version}"
+    modImplementation "maven.modrinth:tough-environment:${project.tough_environment_version}"
 
 }
 

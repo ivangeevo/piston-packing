@@ -1,6 +1,7 @@
 package org.ivangeevo.piston_packing;
 
 import net.fabricmc.api.ModInitializer;
+impimport org.ivangeevo.piston_packing.block.ModBlocks;
 import org.ivangeevo.piston_packing.recipe.ModRecipes;
 import org.ivangeevo.piston_packing.util.OGPistonPackingUtil;
 import org.slf4j.Logger;
@@ -14,7 +15,8 @@ public class PistonPackingMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ModBlocks.registerToItemGroups();
         ModRecipes.registerRecipes();
-        OGPistonPackingUtil.registerPackables();
+        //OGPistonPackingUtil.registerPackables();
     }
 }

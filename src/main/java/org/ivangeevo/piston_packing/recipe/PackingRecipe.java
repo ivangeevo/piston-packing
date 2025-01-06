@@ -37,13 +37,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
+public class PackingRecipe implements Recipe<PackingRecipeInput> {
     protected final String group;
     protected final CraftingRecipeCategory category;
     final DefaultedList<IngredientWithCount> ingredients;
     protected final Ingredient result;
 
-    public PistonPackingRecipe(String group, CraftingRecipeCategory category, DefaultedList<IngredientWithCount> ingredients, Ingredient result) {
+    public PackingRecipe(String group, CraftingRecipeCategory category, DefaultedList<IngredientWithCount> ingredients, Ingredient result) {
         this.group = group;
         this.category = category;
         this.ingredients = DefaultedList.copyOf(IngredientWithCount.EMPTY, ingredients.toArray(new IngredientWithCount[0]));;
@@ -135,15 +135,15 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
         return result;
     }
 
-    public static class Type implements RecipeType<PistonPackingRecipe>
+    public static class Type implements RecipeType<PackingRecipe>
     {
         public static final Type INSTANCE = new Type();
-        public static final String ID = "piston_packing";
+        public static final String ID = "packing";
     }
 
-    public static class Serializer implements RecipeSerializer<PistonPackingRecipe> {
+    public static class Serializer implements RecipeSerializer<PackingRecipe> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final String ID = "piston_packing";
+        public static final String ID = "packing";
         @Unique
         private static final Function<List<IngredientWithCount>, DataResult<DefaultedList<IngredientWithCount>>>
                 INGREDIENTS_VALIDATOR = ingredients -> {
@@ -157,7 +157,7 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             }
         };
 
-        protected static final MapCodec<PistonPackingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+        protected static final MapCodec<PackingRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
                         Codec.STRING.optionalFieldOf("group", "")
                                 .forGetter(recipe -> recipe.group),
@@ -171,11 +171,11 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
                                 .forGetter(recipe -> recipe.ingredients),
                         Ingredient.DISALLOW_EMPTY_CODEC
                                 .fieldOf("result")
-                                .forGetter(PistonPackingRecipe::getBlockResult)
-                ).apply(instance, PistonPackingRecipe::new)
+                                .forGetter(PackingRecipe::getBlockResult)
+                ).apply(instance, PackingRecipe::new)
         );
 
-        public static final PacketCodec<RegistryByteBuf, PistonPackingRecipe> PACKET_CODEC = PacketCodec.ofStatic(
+        public static final PacketCodec<RegistryByteBuf, PackingRecipe> PACKET_CODEC = PacketCodec.ofStatic(
                 Serializer::write, Serializer::read
         );
 
@@ -183,26 +183,26 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
         }
 
         @Override
-        public MapCodec<PistonPackingRecipe> codec() {
+        public MapCodec<PackingRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public PacketCodec<RegistryByteBuf, PistonPackingRecipe> packetCodec() {
+        public PacketCodec<RegistryByteBuf, PackingRecipe> packetCodec() {
             return PACKET_CODEC;
         }
 
-        public static PistonPackingRecipe read(RegistryByteBuf buf) {
+        public static PackingRecipe read(RegistryByteBuf buf) {
             String group = buf.readString();
             CraftingRecipeCategory category = buf.readEnumConstant(CraftingRecipeCategory.class);
             int ingredientsSize = buf.readVarInt();
             DefaultedList<IngredientWithCount> ingredients = DefaultedList.ofSize(ingredientsSize, IngredientWithCount.EMPTY);
             ingredients.replaceAll(ignored -> IngredientWithCount.Serializer.PACKET_CODEC.decode(buf));
             Ingredient result = Ingredient.PACKET_CODEC.decode(buf);
-            return new PistonPackingRecipe(group, category, ingredients, result);
+            return new PackingRecipe(group, category, ingredients, result);
         }
 
-        public static void write(RegistryByteBuf buf, PistonPackingRecipe recipe) {
+        public static void write(RegistryByteBuf buf, PackingRecipe recipe) {
             buf.writeString(recipe.group);
             buf.writeEnumConstant(recipe.category);
             buf.writeVarInt(recipe.ingredients.size());
@@ -313,7 +313,7 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
             Advancement.Builder advancementBuilder = exporter.getAdvancementBuilder().criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(AdvancementRequirements.CriterionMerger.OR);
             this.criteria.forEach(advancementBuilder::criterion);
 
-            PistonPackingRecipe pistonPackingRecipe = new PistonPackingRecipe(
+            PackingRecipe pistonPackingRecipe = new PackingRecipe(
                     Objects.requireNonNullElse(this.group, ""),
                     this.category,
                     this.ingredients,

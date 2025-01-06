@@ -72,7 +72,7 @@ public class OGPistonPackingUtil
         PACKING_RECIPES.put(Blocks.SAND.asItem(), new PackingRecipe(Blocks.SANDSTONE, 2));
     }
 
-    public static void attemptToPackItems(World world, BlockPos pos, Direction direction) {
+    public static void attemptToPackItems(World world, BlockPos pos) {
         if (isLocationSuitableForPacking(world, pos)) {
             // Define bounding box around the target position
             Box targetBox = new Box(pos).expand(0.5); // Adjust box size slightly

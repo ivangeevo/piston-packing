@@ -11,10 +11,10 @@ public class ModRecipes
     public static void registerRecipes() {
 
         // Piston Packing
-        Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(PistonPackingMod.MOD_ID, PistonPackingRecipe.Serializer.ID),
-                PistonPackingRecipe.Serializer.INSTANCE);
-        Registry.register(Registries.RECIPE_TYPE, Identifier.of(PistonPackingMod.MOD_ID, PistonPackingRecipe.Type.ID),
-                PistonPackingRecipe.Type.INSTANCE);
+        Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(PistonPackingMod.MOD_ID, PackingRecipe.Serializer.ID),
+                PackingRecipe.Serializer.INSTANCE);
+        Registry.register(Registries.RECIPE_TYPE, Identifier.of(PistonPackingMod.MOD_ID, PackingRecipe.Type.ID),
+                PackingRecipe.Type.INSTANCE);
 
     }
 }
