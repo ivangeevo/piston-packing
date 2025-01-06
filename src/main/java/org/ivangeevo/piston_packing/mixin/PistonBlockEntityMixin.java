@@ -1,4 +1,4 @@
-package org.ivangeevo.piston_packing.mixin.block.entity;
+package org.ivangeevo.piston_packing.mixin;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.PistonBlockEntity;
@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.ivangeevo.piston_packing.util.OGPistonPackingUtil;
+import org.ivangeevo.piston_packing.util.PistonPackingUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,8 +27,8 @@ public abstract class PistonBlockEntityMixin {
                 targetPos = pos.offset(movementDirection.getOpposite());
 
             }
-            OGPistonPackingUtil.attemptToPackItems(world, targetPos, movementDirection);
-            //PistonPackingUtil.getInstance().attemptToPackItems(world, targetPos, movementDirection);
+            //OGPistonPackingUtil.attemptToPackItems(world, targetPos, movementDirection);
+            PistonPackingUtil.getInstance().attemptToPackItems(world, targetPos, movementDirection);
 
         }
     }

@@ -4,7 +4,8 @@
   "package": "org.ivangeevo.piston_packing.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "block.entity.PistonBlockEntityMixin"
+    "EntityMixin",
+    "PistonBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "piston_packing:gravel_from_piston_packing_flint"
+        "recipe": "minecraft:gravel_from_piston_packing_flint"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "piston_packing:gravel_from_piston_packing_flint"
+      "minecraft:gravel_from_piston_packing_flint"
     ]
   }
 }

@@ -64,17 +64,20 @@ public class PistonPackingRecipe implements Recipe<PackingRecipeInput> {
     public boolean matches(PackingRecipeInput input, World world) {
         // Iterate over the ingredients in the recipe
         for (IngredientWithCount ingredient : ingredients) {
-            // Check if the input contains at least one matching ingredient
-            boolean ingredientMatched = input.items().stream()
-                    .anyMatch(ingredient.toVanilla()); // Check if any item in the input matches the ingredient
+            // Calculate the total count of items in the input that match the ingredient
+            int totalMatchingCount = input.items().stream()
+                    .filter(itemStack -> ingredient.toVanilla().test(itemStack))
+                    .mapToInt(ItemStack::getCount)
+                    .sum();
 
-            // If no matching ingredient is found in the input, return false
-            if (!ingredientMatched) {
+            // If the total matching count is less than the required count for the ingredient, return false
+            if (totalMatchingCount < ingredient.count()) {
                 return false;
             }
         }
-        return true; // All ingredients match
+        return true; // All ingredients match with sufficient counts
     }
+
 
 
 
