@@ -1,10 +1,13 @@
 package org.ivangeevo.piston_packing.util;
 
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.sound.SoundCategory;
@@ -31,51 +34,47 @@ public class PistonPackingUtil
     final RecipeManager.MatchGetter<PackingRecipeInput, PackingRecipe> matchGetter =
             RecipeManager.createCachedMatchGetter(PackingRecipe.Type.INSTANCE);
 
-    public void attemptToPackItems(World world, BlockPos pos) {
-        if (world.isClient) {
-            return;
-        }
 
-        if (!(world.getBlockEntity(pos) instanceof PistonBlockEntity pistonBE)) {
-            return;
-        }
+    public void attemptToPackItems(World world, PistonBlockEntity pistonBE) {
+        if (!world.isClient && pistonBE.isExtending()
+                && (pistonBE.getPushedBlock().getBlock() == Blocks.PISTON_HEAD
+                || PistonUtils.isPushingNormalCube(world, pistonBE.getPos(), pistonBE)
+                || pistonBE.getPushedBlock().getBlock().getDefaultState().isIn(ConventionalBlockTags.GLASS_BLOCKS))
+        ) {
+            BlockPos pos = pistonBE.getPos().offset(pistonBE.getFacing());
 
-        Direction movementDirection = pistonBE.getMovementDirection();
-        boolean isExtending = pistonBE.isExtending();
-        if (isExtending) {
-            pos = pos.offset(movementDirection);
-        } else {
-            pos = pos.offset(movementDirection.getOpposite());
-        }
+            if (isLocationSuitableForPacking(world, pos, pistonBE.getMovementDirection().getOpposite())) {
+                Box targetBox = new Box(pos);
+                List<ItemEntity> itemsWithinBox = world.getEntitiesByClass(ItemEntity.class, targetBox, itemEntity -> true);
 
-        if (!isLocationSuitableForPacking(world, pos, pistonBE)) {
-            return;
-        }
+                if (!itemsWithinBox.isEmpty()) {
+                    PackingRecipe recipe = getValidRecipeFromItemList(itemsWithinBox, world);
 
-        List<ItemEntity> itemsWithinBox = world.getEntitiesByClass(ItemEntity.class, new Box(pos), itemEntity -> true);
+                    if (recipe != null) {
+                        for (Ingredient ingredient : recipe.getIngredients()) {
+                            for (ItemStack stack : ingredient.getMatchingStacks()) {
+                                removeItemsOfTypeFromList(stack, stack.getCount(), itemsWithinBox);
+                            }
+                        }
 
-        if (!itemsWithinBox.isEmpty()) {
-            PackingRecipe recipe = getValidRecipeFromItemList(itemsWithinBox, world);
+                        Optional<BlockState> blockStateOptional = BlockStateUtil.getBlockStateFromIngredient(recipe.getBlockResult());
 
-            if (recipe != null) {
-                removeItemsOfTypeFromList(recipe, itemsWithinBox);
+                        if (blockStateOptional.isPresent()) {
+                            BlockState blockStateResult = blockStateOptional.get();
+                            createPackedBlockOfTypeAtLocation(world, blockStateResult, pos);
+                        }
 
-                Optional<BlockState> blockStateOptional = BlockStateUtil.getBlockStateFromIngredient(recipe.getBlockResult());
-
-                if (blockStateOptional.isPresent()) {
-                    BlockState blockStateResult = blockStateOptional.get();
-                    createPackedBlockOfTypeAtLocation(world, blockStateResult, pos);
+                    }
                 }
-
             }
         }
     }
 
-    private static boolean isLocationSuitableForPacking(World world, BlockPos pos, PistonBlockEntity pistonBE) {
+    private static boolean isLocationSuitableForPacking(World world, BlockPos pos, Direction pistonDirection) {
         if (world.isAir(pos)) {
             for (Direction direction : Direction.values()) {
 
-                if (direction != pistonBE.getMovementDirection()) {
+                if (direction != pistonDirection) {
 
                     BlockPos tempPos = pos.offset(direction);
 
@@ -89,25 +88,6 @@ public class PistonPackingUtil
         return false;
     }
 
-    /**
-    private static boolean isBlockSuitableForPackingToFacing(World world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-
-        // Check if the block is a moving piston (special case)
-        if (block == Blocks.MOVING_PISTON) {
-            return true; // Treat moving pistons as solid for packing
-        }
-
-        // Check if the block is solid or can block movement (including glass, etc.)
-        if (block != Blocks.AIR && block.getDefaultState().isSolidBlock(world, pos)) {
-            return true;
-        }
-
-        // Special case: treat transparent blocks like glass as suitable for packing
-        return block.getDefaultState().isIn(ConventionalBlockTags.GLASS_BLOCKS);
-    }
-     **/
-
     private static boolean isBlockSuitableForPackingToFacing(World world, BlockPos pos, Direction facing) {
         Block block = world.getBlockState(pos).getBlock();
 
@@ -118,54 +98,17 @@ public class PistonPackingUtil
         return false;
     }
 
-
-
     private static void createPackedBlockOfTypeAtLocation(World world, BlockState state, BlockPos pos) {
-        if (world.isAir(pos)) {
-            world.setBlockState(pos, state, Block.NOTIFY_ALL);
-            world.playSound(null, pos, state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0f, 1.0f);
-        }
+        world.setBlockState(pos, state, Block.NOTIFY_ALL);
+        world.playSound(null, pos, state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0f, 1.0f);
     }
 
-    private static void removeItemsOfTypeFromList(PackingRecipe recipe, List<ItemEntity> itemsWithinBox) {
-        ItemStack inputStack = recipe.getIngredients().getFirst().getMatchingStacks()[0];
-        int inputCount = recipe.getIngredients().size();
-
-        for (ItemEntity tempItem : itemsWithinBox) {
-            if (tempItem.isAlive()) {
-                ItemStack tempStack = tempItem.getStack();
-
-                if (tempStack == inputStack) {
-                    int newCount;
-                    if (tempStack.getCount() > inputCount) {
-                        newCount = tempStack.getCount() - inputCount;
-                        tempStack.setCount(newCount);
-                        break;
-                    } else {
-                        inputCount = inputCount - tempStack.getCount();
-                        tempStack.setCount(0);
-                        tempItem.kill();
-
-                        if (inputCount <= 0) {
-                            break;
-                        }
-                    }
-
-
-                }
-            }
-        }
-
-    }
-
-    /**
-    private static void removeItemsOfTypeFromList(PackingRecipe recipe, List<ItemEntity> itemsWithinBox) {
-        int inputCount = recipe.getIngredients().size();
+    private static void removeItemsOfTypeFromList(ItemStack stack, int iCount, List<ItemEntity> itemsWithinBox) {
+        int inputCount = iCount;
 
         for (ItemEntity itemEntity : itemsWithinBox) {
-            ItemStack stack = itemEntity.getStack();
 
-            if (recipe.getIngredients().getFirst().test(stack)) {
+            if (stack != null) {
                 int stackCount = stack.getCount();
 
                 if (inputCount <= stackCount) {
@@ -182,7 +125,7 @@ public class PistonPackingUtil
             }
         }
     }
-     **/
+
 
     private PackingRecipe getValidRecipeFromItemList(List<ItemEntity> itemsWithinBox, World world) {
         DefaultedList<ItemStack> stack = createIngredientFromItems(itemsWithinBox);
