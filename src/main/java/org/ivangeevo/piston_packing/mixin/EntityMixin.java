@@ -52,8 +52,9 @@ public abstract class EntityMixin {
             mutable.set(blockPos, direction);
 
             // Check if the adjacent block in the given direction is not a full cube
-            if (!this.getWorld().getBlockState(mutable).isFullCube(this.getWorld(), mutable)
-                    && this.getSpecificBlocks(this.getWorld().getBlockState(mutable).getBlock())) {
+            if ((!this.getWorld().getBlockState(mutable).isOpaqueFullCube(this.getWorld(), mutable))
+                    && getSpecificBlocks(getWorld().getBlockState(mutable).getBlock()))
+            {
                 double distance = direction.getAxis().choose(offset.x, offset.y, offset.z);
                 if (direction.getDirection() == Direction.AxisDirection.POSITIVE) {
                     distance = 1.0 - distance;

@@ -1,17 +1,13 @@
 package org.ivangeevo.piston_packing.util;
 
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -52,7 +48,7 @@ public class PistonPackingUtil
             pos = pos.offset(movementDirection.getOpposite());
         }
 
-        if (!isLocationSuitableForPacking(world, pos)) {
+        if (!isLocationSuitableForPacking(world, pos, pistonBE)) {
             return;
         }
 
@@ -75,14 +71,17 @@ public class PistonPackingUtil
         }
     }
 
-    private static boolean isLocationSuitableForPacking(World world, BlockPos pos) {
+    private static boolean isLocationSuitableForPacking(World world, BlockPos pos, PistonBlockEntity pistonBE) {
         if (world.isAir(pos)) {
             for (Direction direction : Direction.values()) {
 
-                BlockPos offsetPos = pos.offset(direction);
+                if (direction != pistonBE.getMovementDirection()) {
 
-                if (!isBlockSuitableForPackingToFacing(world, offsetPos)) {
-                    return false;
+                    BlockPos tempPos = pos.offset(direction);
+
+                    if (!isBlockSuitableForPackingToFacing(world, tempPos, direction.getOpposite())) {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -90,7 +89,7 @@ public class PistonPackingUtil
         return false;
     }
 
-
+    /**
     private static boolean isBlockSuitableForPackingToFacing(World world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
 
@@ -107,18 +106,18 @@ public class PistonPackingUtil
         // Special case: treat transparent blocks like glass as suitable for packing
         return block.getDefaultState().isIn(ConventionalBlockTags.GLASS_BLOCKS);
     }
+     **/
 
-    /**
-    private static boolean isBlockSuitableForPackingToFacing(World world, BlockPos pos) {
+    private static boolean isBlockSuitableForPackingToFacing(World world, BlockPos pos, Direction facing) {
         Block block = world.getBlockState(pos).getBlock();
 
         if ( block != null ) {
-            return block.getDefaultState().isOpaqueFullCube(world, pos);
+            return PistonUtils.canContainPistonPackingToFacing(world, pos, facing) ;
         }
 
         return false;
     }
-     **/
+
 
 
     private static void createPackedBlockOfTypeAtLocation(World world, BlockState state, BlockPos pos) {
@@ -129,7 +128,39 @@ public class PistonPackingUtil
     }
 
     private static void removeItemsOfTypeFromList(PackingRecipe recipe, List<ItemEntity> itemsWithinBox) {
-        int countRequired = recipe.getIngredients().size();
+        ItemStack inputStack = recipe.getIngredients().getFirst().getMatchingStacks()[0];
+        int inputCount = recipe.getIngredients().size();
+
+        for (ItemEntity tempItem : itemsWithinBox) {
+            if (tempItem.isAlive()) {
+                ItemStack tempStack = tempItem.getStack();
+
+                if (tempStack == inputStack) {
+                    int newCount;
+                    if (tempStack.getCount() > inputCount) {
+                        newCount = tempStack.getCount() - inputCount;
+                        tempStack.setCount(newCount);
+                        break;
+                    } else {
+                        inputCount = inputCount - tempStack.getCount();
+                        tempStack.setCount(0);
+                        tempItem.kill();
+
+                        if (inputCount <= 0) {
+                            break;
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+    }
+
+    /**
+    private static void removeItemsOfTypeFromList(PackingRecipe recipe, List<ItemEntity> itemsWithinBox) {
+        int inputCount = recipe.getIngredients().size();
 
         for (ItemEntity itemEntity : itemsWithinBox) {
             ItemStack stack = itemEntity.getStack();
@@ -137,20 +168,21 @@ public class PistonPackingUtil
             if (recipe.getIngredients().getFirst().test(stack)) {
                 int stackCount = stack.getCount();
 
-                if (countRequired <= stackCount) {
-                    stack.decrement(countRequired);
+                if (inputCount <= stackCount) {
+                    stack.decrement(inputCount);
 
                     if (stack.isEmpty()) {
                         itemEntity.discard(); // Remove the entity if stack is empty
                     }
                     break;
                 } else {
-                    countRequired -= stackCount;
+                    inputCount -= stackCount;
                     itemEntity.discard();
                 }
             }
         }
     }
+     **/
 
     private PackingRecipe getValidRecipeFromItemList(List<ItemEntity> itemsWithinBox, World world) {
         DefaultedList<ItemStack> stack = createIngredientFromItems(itemsWithinBox);

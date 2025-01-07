@@ -62,21 +62,46 @@ public class PackingRecipe implements Recipe<PackingRecipeInput> {
 
     @Override
     public boolean matches(PackingRecipeInput input, World world) {
-        // Iterate over the ingredients in the recipe
-        for (IngredientWithCount ingredient : ingredients) {
-            // Calculate the total count of items in the input that match the ingredient
-            int totalMatchingCount = input.items().stream()
-                    .filter(itemStack -> ingredient.toVanilla().test(itemStack))
-                    .mapToInt(ItemStack::getCount)
-                    .sum();
+        // Create a mutable list of copies of the available item stacks
+        List<ItemStack> availableStacks = input.items().stream()
+                .map(ItemStack::copy) // Ensure we don't modify the original input stacks
+                .toList();
 
-            // If the total matching count is less than the required count for the ingredient, return false
-            if (totalMatchingCount < ingredient.count()) {
+        // Iterate through all the ingredients in the recipe
+        for (IngredientWithCount ingredient : ingredients) {
+            int requiredCount = ingredient.count(); // How many items are needed for this ingredient
+
+            // Iterate over the available stacks to find matching items
+            for (ItemStack stack : availableStacks) {
+                // Skip stacks that are empty
+                if (stack.isEmpty()) continue;
+
+                // Check if the stack matches the ingredient
+                if (ingredient.toVanilla().test(stack)) {
+                    // Determine how many items from this stack can be used
+                    int matchCount = Math.min(stack.getCount(), requiredCount);
+                    requiredCount -= matchCount; // Reduce the required count
+
+                    // Reduce the stack count to simulate consumption
+                    stack.decrement(matchCount);
+
+                    // If the required count is satisfied, stop searching for this ingredient
+                    if (requiredCount <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            // If there are still unsatisfied items for this ingredient, the recipe does not match
+            if (requiredCount > 0) {
                 return false;
             }
         }
-        return true; // All ingredients match with sufficient counts
+
+        // All ingredients matched with sufficient counts
+        return true;
     }
+
 
 
 
