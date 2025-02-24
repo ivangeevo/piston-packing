@@ -31,7 +31,7 @@ public abstract class EntityMixin {
     @Unique
     boolean isItemEntity = (Entity)(Object)this instanceof ItemEntity;
 
-    @Inject(method = "pushOutOfBlocks", at = @At("HEAD"), cancellable = true)
+    //@Inject(method = "pushOutOfBlocks", at = @At("HEAD"), cancellable = true)
     private void onPushOutOfBlocks(double x, double y, double z, CallbackInfo ci) {
 
         if (!isItemEntity) {
@@ -51,9 +51,12 @@ public abstract class EntityMixin {
         for (Direction direction : directions) {
             mutable.set(blockPos, direction);
 
+            if (!getSpecificBlocks(getWorld().getBlockState(mutable).getBlock())) {
+                return;
+            }
+
             // Check if the adjacent block in the given direction is not a full cube
-            if ((!this.getWorld().getBlockState(mutable).isOpaqueFullCube(this.getWorld(), mutable))
-                    && getSpecificBlocks(getWorld().getBlockState(mutable).getBlock()))
+            if ((!this.getWorld().getBlockState(mutable).isOpaqueFullCube(this.getWorld(), mutable)))
             {
                 double distance = direction.getAxis().choose(offset.x, offset.y, offset.z);
                 if (direction.getDirection() == Direction.AxisDirection.POSITIVE) {
