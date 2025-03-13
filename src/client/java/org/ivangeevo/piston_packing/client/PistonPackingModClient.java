@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.render.RenderLayer;
 import org.ivangeevo.piston_packing.block.ModBlocks;
 
-public class Piston_packingClient implements ClientModInitializer
+public class PistonPackingModClient implements ClientModInitializer
 {
 
     @Override

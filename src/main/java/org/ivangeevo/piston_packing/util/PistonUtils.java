@@ -12,9 +12,7 @@ public class PistonUtils {
         return pistonBE.getPushedBlock().isOpaqueFullCube(world, pos);
     }
 
-
-    public static boolean canContainPistonPackingToFacing(World world, BlockPos pos, Direction facing)
-    {
+    public static boolean canContainPistonPackingToFacing(World world, BlockPos pos, Direction facing) {
         return HardpointUtils.hasLargeCenterHardPointToFacing(world, pos, facing);
     }
 

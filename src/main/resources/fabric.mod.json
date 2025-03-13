@@ -2,17 +2,26 @@
   "schemaVersion": 1,
   "id": "piston_packing",
   "version": "${version}",
-  "name": "piston-packing",
+  "name": "Piston Packing",
   "description": "",
-  "authors": [],
+  "authors": [
+    "ivangeevo",
+    "RatherBeLunar"
+  ],
   "contact": {},
-  "license": "MIT",
+  "license": "CC-BY-4.0",
   "icon": "assets/piston_packing/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": ["org.ivangeevo.piston_packing.client.Piston_packingClient"],
-    "main": ["org.ivangeevo.piston_packing.PistonPackingMod"],
-    "fabric-datagen": ["org.ivangeevo.piston_packing.PistonPackingDataGenerator"]
+    "client": [
+      "org.ivangeevo.piston_packing.client.PistonPackingModClient"
+    ],
+    "main": [
+      "org.ivangeevo.piston_packing.PistonPackingMod"
+    ],
+    "fabric-datagen": [
+      "org.ivangeevo.piston_packing.PistonPackingDataGenerator"
+    ]
   },
   "mixins": [
     "piston_packing.mixins.json",

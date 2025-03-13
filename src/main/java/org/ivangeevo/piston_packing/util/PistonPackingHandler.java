@@ -23,11 +23,11 @@ import java.util.*;
 
 // TODO:
 /** new and better class code? idk. try it after the recipe class is finished **/
-public class PistonPackingUtil
+public class PistonPackingHandler
 {
-    private static final PistonPackingUtil instance = new PistonPackingUtil();
-    private PistonPackingUtil() {}
-    public static PistonPackingUtil getInstance() {
+    private static final PistonPackingHandler instance = new PistonPackingHandler();
+    private PistonPackingHandler() {}
+    public static PistonPackingHandler getInstance() {
         return instance;
     }
 
@@ -107,20 +107,23 @@ public class PistonPackingUtil
         int inputCount = iCount;
 
         for (ItemEntity itemEntity : itemsWithinBox) {
+            if (inputCount <= 0) {
+                break; // No more items to remove
+            }
+
+            ItemStack entityStack = itemEntity.getStack(); // Get the stack from the item entity
+            int stackCount = entityStack.getCount();
 
             if (stack != null) {
-                int stackCount = stack.getCount();
-
                 if (inputCount <= stackCount) {
-                    stack.decrement(inputCount);
-
-                    if (stack.isEmpty()) {
-                        itemEntity.discard(); // Remove the entity if stack is empty
-                    }
-                    break;
+                    // Decrement the entity stack by the inputCount
+                    entityStack.decrement(inputCount);
+                    inputCount = 0; // All items removed
                 } else {
+                    // Remove the entire stack of this item entity and reduce the inputCount
                     inputCount -= stackCount;
-                    itemEntity.discard();
+                    entityStack.setCount(0); // Set the stack count to 0
+                    itemEntity.discard(); // Discard the entity when it's empty
                 }
             }
         }
@@ -136,7 +139,6 @@ public class PistonPackingUtil
 
     private static DefaultedList<ItemStack> createIngredientFromItems(List<ItemEntity> itemsWithinBox) {
         return DefaultedList.copyOf(ItemStack.EMPTY, itemsWithinBox.stream().map(ItemEntity::getStack).toArray(ItemStack[]::new));
-
     }
 
     public Optional<RecipeEntry<PackingRecipe>> getRecipeFor(World world, DefaultedList<ItemStack> ingredient) {
