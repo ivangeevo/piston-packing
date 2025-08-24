@@ -10,6 +10,10 @@
     {
       "id": "tough_environment:dirt_packed",
       "required": false
+    },
+    {
+      "id": "tough_environment:dirt_loose",
+      "required": false
     }
   ]
 }

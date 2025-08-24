@@ -7,7 +7,6 @@
     "EntityMixin",
     "PistonBEAccessor",
     "PistonBlockEntityMixin",
-    "PistonBlockMixin",
     "PistonHandlerMixin"
   ],
   "injectors": {

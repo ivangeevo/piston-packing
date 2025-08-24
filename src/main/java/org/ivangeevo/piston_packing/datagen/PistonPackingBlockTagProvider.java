@@ -37,6 +37,7 @@ public class PistonPackingBlockTagProvider extends FabricTagProvider.BlockTagPro
                 .add(Blocks.DIRT)
                 .add(Blocks.GRAVEL)
                 .add(Blocks.SOUL_SAND)
-                .addOptional(Identifier.of("tough_environment", "dirt_packed"));
+                .addOptional(Identifier.of("tough_environment", "dirt_packed"))
+                .addOptional(Identifier.of("tough_environment", "dirt_loose"));
     }
 }
