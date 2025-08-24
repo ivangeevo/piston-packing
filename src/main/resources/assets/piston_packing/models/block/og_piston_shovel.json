@@ -1,5 +1,5 @@
 {
-	"parent": "minecraft:block/orientable",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "piston_packing:block/piston_shovel",
 		"1": "piston_packing:block/piston_shovel_edge",

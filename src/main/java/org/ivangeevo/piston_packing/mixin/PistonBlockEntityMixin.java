@@ -20,6 +20,5 @@ public abstract class PistonBlockEntityMixin {
         PistonPackingHandler.getInstance().attemptToPackItems(world, blockEntity);
     }
 
-
-
 }
+

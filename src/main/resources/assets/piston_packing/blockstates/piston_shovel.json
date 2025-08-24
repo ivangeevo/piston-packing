@@ -1,26 +1,15 @@
 {
   "variants": {
-    "sculk_sensor_phase=active": {
-      "model": "minecraft:block/sculk_sensor_active"
-    },
-    "sculk_sensor_phase=cooldown": {
-      "model": "minecraft:block/sculk_sensor_active"
-    },
-    "sculk_sensor_phase=inactive": {
-      "model": "minecraft:block/sculk_sensor_inactive"
-    },
+    "facing=north,vertical_direction=up":   { "model": "piston_packing:block/piston_shovel", "x": 0,   "y": 0 },
+    "facing=north,vertical_direction=down": { "model": "piston_packing:block/piston_shovel", "x": 180, "y": 180 },
 
-    "axis=x": {
-      "model": "minecraft:block/oak_log_horizontal",
-      "x": 90,
-      "y": 90
-    },
-    "axis=y": {
-      "model": "minecraft:block/oak_log"
-    },
-    "axis=z": {
-      "model": "minecraft:block/oak_log_horizontal",
-      "x": 90
-    }
+    "facing=south,vertical_direction=up":   { "model": "piston_packing:block/piston_shovel", "x": 0,   "y": 180 },
+    "facing=south,vertical_direction=down": { "model": "piston_packing:block/piston_shovel", "x": 180, "y": 0 },
+
+    "facing=east,vertical_direction=up":    { "model": "piston_packing:block/piston_shovel", "x": 0,   "y": 90 },
+    "facing=east,vertical_direction=down":  { "model": "piston_packing:block/piston_shovel", "x": 180, "y": 270 },
+
+    "facing=west,vertical_direction=up":    { "model": "piston_packing:block/piston_shovel", "x": 0,   "y": 270 },
+    "facing=west,vertical_direction=down":  { "model": "piston_packing:block/piston_shovel", "x": 180, "y": 90 }
   }
 }

@@ -2,6 +2,8 @@ package org.ivangeevo.piston_packing;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import org.ivangeevo.piston_packing.datagen.PistonPackingBlockTagProvider;
+import org.ivangeevo.piston_packing.datagen.PistonPackingLangProvider;
 import org.ivangeevo.piston_packing.datagen.PistonPackingRecipeProvider;
 
 public class PistonPackingDataGenerator implements DataGeneratorEntrypoint {
@@ -11,6 +13,8 @@ public class PistonPackingDataGenerator implements DataGeneratorEntrypoint {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
         pack.addProvider(PistonPackingRecipeProvider::new);
+        pack.addProvider(PistonPackingBlockTagProvider::new);
+        pack.addProvider(PistonPackingLangProvider::new);
     }
 
 

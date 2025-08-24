@@ -4,16 +4,11 @@ import btwr.btwr_sl.lib.util.utils.RecipeProviderUtils;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.*;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import org.ivangeevo.piston_packing.recipe.PackingRecipe;
-import org.tough_environment.block.ModBlocks;
-import org.tough_environment.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -36,8 +31,8 @@ public class PistonPackingRecipeProvider extends FabricRecipeProvider implements
         //offerPacking(Blocks.SANDSTONE, Items.SAND, 2, exporter);
 
         // Uncomment and add more as necessary:
-        offerPacking(ModBlocks.DIRT_LOOSE, ModItems.PILE_DIRT, 8, exporter);
-        offerPacking(ModBlocks.DIRT_PACKED, ModBlocks.DIRT_LOOSE.asItem(), 2, exporter);
+        //offerPacking(ModBlocks.DIRT_LOOSE, ModItems.PILE_DIRT, 8, exporter);
+        //offerPacking(ModBlocks.DIRT_PACKED, ModBlocks.DIRT_LOOSE.asItem(), 2, exporter);
 
         //offerPacking(Blocks.GRAVEL, ModItems.PILE_GRAVEL, 8, exporter);
         //offerPacking(Blocks.SAND, ModItems.PILE_SAND, 8, exporter);

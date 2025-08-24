@@ -5,7 +5,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EntityMixin",
-    "PistonBlockEntityMixin"
+    "PistonBEAccessor",
+    "PistonBlockEntityMixin",
+    "PistonBlockMixin",
+    "PistonHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
