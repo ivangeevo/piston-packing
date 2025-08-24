@@ -6,6 +6,10 @@
     "minecraft:clay",
     "minecraft:dirt",
     "minecraft:gravel",
-    "minecraft:soul_sand"
+    "minecraft:soul_sand",
+    {
+      "id": "tough_environment:dirt_packed",
+      "required": false
+    }
   ]
 }

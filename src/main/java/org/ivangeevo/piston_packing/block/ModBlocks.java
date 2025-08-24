@@ -40,7 +40,6 @@ public class ModBlocks
     public static void registerToItemGroups() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(entries -> {
             entries.addAfter(Blocks.STICKY_PISTON, PISTON_SHOVEL);
-
         });
     }
 }

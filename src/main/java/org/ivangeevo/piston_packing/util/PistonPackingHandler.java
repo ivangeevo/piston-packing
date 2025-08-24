@@ -31,10 +31,6 @@ public class PistonPackingHandler
         return instance;
     }
 
-    final RecipeManager.MatchGetter<PackingRecipeInput, PackingRecipe> matchGetter =
-            RecipeManager.createCachedMatchGetter(PackingRecipe.Type.INSTANCE);
-
-
     public void attemptToPackItems(World world, PistonBlockEntity pistonBE) {
         if (!world.isClient && pistonBE.isExtending()
                 && (pistonBE.getPushedBlock().getBlock() == Blocks.PISTON_HEAD
@@ -59,10 +55,9 @@ public class PistonPackingHandler
 
                         Optional<BlockState> blockStateOptional = BlockStateUtil.getBlockStateFromIngredient(recipe.getBlockResult());
 
-                        if (blockStateOptional.isPresent()) {
-                            BlockState blockStateResult = blockStateOptional.get();
-                            createPackedBlockOfTypeAtLocation(world, blockStateResult, pos);
-                        }
+                        blockStateOptional.ifPresent(blockStateResult ->
+                                createPackedBlockOfTypeAtLocation(world, blockStateResult, pos)
+                        );
 
                     }
                 }

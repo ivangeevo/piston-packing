@@ -6,8 +6,11 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.server.recipe.*;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
+import org.ivangeevo.piston_packing.block.ModBlocks;
 import org.ivangeevo.piston_packing.recipe.PackingRecipe;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,6 +24,14 @@ public class PistonPackingRecipeProvider extends FabricRecipeProvider implements
 
     @Override
     public void generate(RecipeExporter exporter) {
+
+        ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, ModBlocks.PISTON_SHOVEL)
+                .input('I', Items.IRON_INGOT)
+                .pattern("I  ")
+                .pattern("II ")
+                .pattern("III")
+                .criterion("has_iron_ingot", conditionsFromItem(Items.IRON_INGOT))
+                .offerTo(exporter);
 
         // Items Packing Recipes
         //offerPacking(Blocks.RAW_GOLD_BLOCK, Items.RAW_GOLD, 9, exporter);
