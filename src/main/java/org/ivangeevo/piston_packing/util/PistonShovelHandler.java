@@ -91,7 +91,7 @@ public interface PistonShovelHandler {
         if (!world.isClient && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) {
             ItemEntity itemEntity = itemEntitySupplier.get();
 
-            // Apply velocity in eject direction (scaled down for realism)
+            // Apply velocity in the eject direction (scaled down for realism)
             Vec3d velocity = Vec3d.of(facing.getVector()).multiply(0.25);
             itemEntity.setVelocity(velocity);
 
