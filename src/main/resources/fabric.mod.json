@@ -13,15 +13,9 @@
   "icon": "assets/piston_packing/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "org.ivangeevo.piston_packing.client.PistonPackingModClient"
-    ],
-    "main": [
-      "org.ivangeevo.piston_packing.PistonPackingMod"
-    ],
-    "fabric-datagen": [
-      "org.ivangeevo.piston_packing.PistonPackingDataGenerator"
-    ]
+    "client": ["org.ivangeevo.piston_packing.client.PistonPackingModClient"],
+    "main": ["org.ivangeevo.piston_packing.PistonPackingMod"],
+    "fabric-datagen": ["org.ivangeevo.piston_packing.PistonPackingDataGenerator"]
   },
   "mixins": [
     "piston_packing.mixins.json",
@@ -34,12 +28,5 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}"
-  },
-
-  "custom": {
-    "loom:injected_interfaces": {
-    }
   }
-
-
 }

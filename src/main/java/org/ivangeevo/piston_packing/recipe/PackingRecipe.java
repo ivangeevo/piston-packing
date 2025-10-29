@@ -102,10 +102,6 @@ public class PackingRecipe implements Recipe<PackingRecipeInput> {
         return true;
     }
 
-
-
-
-
     @Override
     public boolean fits(int width, int height) {
         return true;
@@ -160,8 +156,7 @@ public class PackingRecipe implements Recipe<PackingRecipeInput> {
         return result;
     }
 
-    public static class Type implements RecipeType<PackingRecipe>
-    {
+    public static class Type implements RecipeType<PackingRecipe> {
         public static final Type INSTANCE = new Type();
         public static final String ID = "packing";
     }
@@ -172,7 +167,9 @@ public class PackingRecipe implements Recipe<PackingRecipeInput> {
         @Unique
         private static final Function<List<IngredientWithCount>, DataResult<DefaultedList<IngredientWithCount>>>
                 INGREDIENTS_VALIDATOR = ingredients -> {
-            IngredientWithCount[] ingredientsArray = ingredients.stream().filter(ingredient -> !ingredient.ingredient().isEmpty()).toArray(IngredientWithCount[]::new);
+            IngredientWithCount[] ingredientsArray = ingredients.stream()
+                    .filter(ingredient -> !ingredient.ingredient().isEmpty())
+                    .toArray(IngredientWithCount[]::new);
             if (ingredientsArray.length == 0) {
                 return DataResult.error(() -> "No ingredients for piston packing recipe");
             } else {

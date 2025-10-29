@@ -5,6 +5,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -17,7 +18,7 @@ public class BlockStateUtil {
             return null;
         }
     
-        public static Optional<BlockState> getBlockStateFromIngredient(Ingredient ingredient) {
+        public static Optional<BlockState> getBlockStateFromIngredient1(Ingredient ingredient) {
             ItemStack[] matchingStacks = ingredient.getMatchingStacks();
     
             // Iterate through the stacks to find the first that represents a block
@@ -31,4 +32,15 @@ public class BlockStateUtil {
                     .filter(Objects::nonNull)
                     .findFirst();
         }
+
+    /**
+     * Converts a recipe-defined Ingredient into a BlockState, if any matching stack is a BlockItem.
+     * If the ingredient represents non-block items, returns empty.
+     */
+    public static Optional<BlockState> getBlockStateFromIngredient(Ingredient ingredient) {
+        return Arrays.stream(ingredient.getMatchingStacks())
+                .filter(stack -> stack.getItem() instanceof BlockItem)
+                .map(stack -> ((BlockItem) stack.getItem()).getBlock().getDefaultState())
+                .findFirst();
     }
+}

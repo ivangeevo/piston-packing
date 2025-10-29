@@ -71,9 +71,9 @@ public class PistonPackingRecipeProvider extends FabricRecipeProvider
          **/
     }
 
-    private void offerPacking(Block result, Item ingredient, int count, RecipeExporter exporter) {
+    private void offerPacking(Block result, Item ingredient, CraftingRecipeCategory category, int count, RecipeExporter exporter) {
         PackingRecipe.JsonBuilder.create().result(result)
-                .category(CraftingRecipeCategory.MISC)
+                .category(category)
                 .ingredient(ingredient, count)
                 .criterion(hasItem(ingredient), conditionsFromItem(ingredient))
                 .offerTo(exporter);
