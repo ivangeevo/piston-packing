@@ -21,8 +21,6 @@ import org.ivangeevo.piston_packing.recipe.PackingRecipe;
 
 import java.util.*;
 
-// TODO:
-/** new and better class code? idk. try it after the recipe class is finished **/
 public class PistonPackingHandler
 {
     private static final PistonPackingHandler instance = new PistonPackingHandler();
