@@ -38,6 +38,7 @@ public class BlockStateUtil {
      * If the ingredient represents non-block items, returns empty.
      */
     public static Optional<BlockState> getBlockStateFromIngredient(Ingredient ingredient) {
+        // wtf is this filter condition
         return Arrays.stream(ingredient.getMatchingStacks())
                 .filter(stack -> stack.getItem() instanceof BlockItem)
                 .map(stack -> ((BlockItem) stack.getItem()).getBlock().getDefaultState())
