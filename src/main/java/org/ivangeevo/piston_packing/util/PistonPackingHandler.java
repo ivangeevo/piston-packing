@@ -9,7 +9,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -51,10 +50,10 @@ public class PistonPackingHandler
                             }
                         }
 
-                        Optional<BlockState> blockStateOptional = BlockStateUtil.getBlockStateFromIngredient(recipe.getBlockResult());
+                        Optional<BlockState> optional = BlockStateUtil.getBlockStateFromIngredient(recipe.getBlockResult());
 
-                        blockStateOptional.ifPresent(blockStateResult ->
-                                createPackedBlockOfTypeAtLocation(world, blockStateResult, pos)
+                        optional.ifPresent(result ->
+                                createPackedBlockOfTypeAtLocation(world, result, pos)
                         );
 
                     }
