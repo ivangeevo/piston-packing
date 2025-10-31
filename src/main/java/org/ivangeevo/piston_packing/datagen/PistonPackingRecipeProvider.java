@@ -11,6 +11,7 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import org.ivangeevo.piston_packing.block.ModBlocks;
 import org.ivangeevo.piston_packing.recipe.PackingRecipe;
+import org.tough_environment.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
